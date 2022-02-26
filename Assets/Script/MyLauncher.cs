@@ -1,10 +1,13 @@
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 
 public class MyLauncher : MonoBehaviourPunCallbacks
 {
+	[SerializeField] private Button _connect;
+	[SerializeField] private Text _connectText;
 
 	/// <summary>
 	/// This client's version number. Users are separated from each other by gameVersion (which allows you to make breaking changes).
@@ -21,13 +24,10 @@ public class MyLauncher : MonoBehaviourPunCallbacks
 		PhotonNetwork.AutomaticallySyncScene = true;
 	}
 
-	/// <summary>
-	/// MonoBehaviour method called on GameObject by Unity during initialization phase.
-	/// /// </summary>
-	void Start()
-	{
-		Connect();
-	}
+	private void Start()
+    {
+		_connect.onClick.AddListener(Connect);
+    }
 
 	/// <summary>
 	/// Start the connection process.
@@ -36,6 +36,7 @@ public class MyLauncher : MonoBehaviourPunCallbacks
 	/// </summary>
 	public void Connect()
 	{
+		_connect.interactable = false;
 		// we check if we are connected or not, we join if we are , else we initiate the connection to the server.
 		if (PhotonNetwork.IsConnected)
 		{
@@ -50,8 +51,27 @@ public class MyLauncher : MonoBehaviourPunCallbacks
 		}
 	}
 
-	public override void OnConnectedToMaster()
+    private void Disconnect()
+    {
+		_connect.interactable = false;
+		PhotonNetwork.Disconnect();
+    }
+
+    public override void OnConnectedToMaster()
 	{
+		_connect.onClick.RemoveAllListeners();
+		_connect.onClick.AddListener(Disconnect);
+		_connectText.text = "Disconnect";
 		Debug.Log("OnConnectedToMaster() was called by PUN");
+		_connect.interactable = true;
 	}
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+		_connect.onClick.RemoveAllListeners();
+		_connect.onClick.AddListener(Connect);
+		_connectText.text = "Connect";
+		base.OnDisconnected(cause);
+		_connect.interactable = true;
+    }
 }
