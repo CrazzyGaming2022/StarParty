@@ -1,15 +1,11 @@
 ﻿using PlayFab;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SignInWindow : AccountDataWindowBase
 {
     [SerializeField] private Button _signInButton;
+    [SerializeField] private LoadingView _loadingView;
 
     protected override void SubscriptionsElementsUi()
     {
@@ -20,6 +16,7 @@ public class SignInWindow : AccountDataWindowBase
 
     private void SignIn()
     {
+        _loadingView.Show();
         PlayFabClientAPI.LoginWithPlayFab(new PlayFab.ClientModels.LoginWithPlayFabRequest()
         {
             Username = _username,
@@ -29,8 +26,13 @@ public class SignInWindow : AccountDataWindowBase
         {
             Debug.Log($"Username complete sign in: {_username}");
             EnterInGameScene();
+            _loadingView.Hide();
         },
-        error => Debug.Log($"Error: {error.ErrorMessage}"));
+        error =>
+        {
+            Debug.Log($"Error: {error.ErrorMessage}");
+            _loadingView.Hide();
+        });
     }
 }
 
