@@ -43,7 +43,7 @@ public class PlayFabLogin : MonoBehaviour
         _outputLabel.text = "Success!";
         _outputLabel.color = Color.green;
         _loginButton.interactable = true;
-        Debug.Log($"Complete eneter! Guid: {id}");
+        Debug.Log($"Complete enter! Guid: {id}");
     }
 
     private void OnLoginFailure(PlayFabError error)

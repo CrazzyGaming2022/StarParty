@@ -1,5 +1,6 @@
 using PlayFab;
 using PlayFab.ClientModels;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,23 @@ public class PlayfabAccountManager : MonoBehaviour
         OnError);
         _deletePlayerButton.onClick.AddListener(DeletePlayer);
         _deletePlayerButton.interactable = false;
+        PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(),
+            OnGetCatalogSuccess,
+            OnError);
+    }
+
+    private void OnGetCatalogSuccess(GetCatalogItemsResult result)
+    {
+        InfoCatalog(result.Catalog);
+        Debug.Log("Catalog download!");
+    }
+
+    private void InfoCatalog(List<CatalogItem> catalog)
+    {
+        foreach (var catalogItem in catalog)
+        {
+            Debug.Log(catalogItem.ItemId);
+        }
     }
 
     private void DeletePlayer()
@@ -26,8 +44,7 @@ public class PlayfabAccountManager : MonoBehaviour
             PlayFabId = _playfabId
         },
         result => Debug.Log("Player deleted"),
-        error => Debug.Log("Delete error"
-        ));
+        error => Debug.Log("Delete error"));
     }
 
     private void OnError(PlayFabError error)
