@@ -8,6 +8,7 @@ public class PlayfabAccountManager : MonoBehaviour
 {
     [SerializeField] private Text _titleLabel;
     [SerializeField] private Button _deletePlayerButton;
+    [SerializeField] private CatalogView _catalogView;
 
     private string _playfabId;
 
@@ -31,10 +32,7 @@ public class PlayfabAccountManager : MonoBehaviour
 
     private void InfoCatalog(List<CatalogItem> catalog)
     {
-        foreach (var catalogItem in catalog)
-        {
-            Debug.Log(catalogItem.ItemId);
-        }
+        _catalogView.DisplayCatalog(catalog);
     }
 
     private void DeletePlayer()
