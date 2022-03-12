@@ -1,0 +1,168 @@
+{
+  "CatalogVersion": "main",
+  "Catalog": [
+    {
+      "ItemId": "fighter_id",
+      "ItemClass": "spaceship",
+      "CatalogVersion": "main",
+      "DisplayName": "Fighter",
+      "Description": "Fast and maneuverable spaceship, equipped with light weapons",
+      "VirtualCurrencyPrices": {
+        "CR": 10000
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "destroyer_id",
+      "ItemClass": "spaceship",
+      "CatalogVersion": "main",
+      "DisplayName": "Destroyer",
+      "Description": "Average maneuverability and armament",
+      "VirtualCurrencyPrices": {
+        "CR": 30000
+      },
+      "RealCurrencyPrices": null,
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "cruiser_id",
+      "ItemClass": "spaceship",
+      "CatalogVersion": "main",
+      "DisplayName": "Cruiser",
+      "Description": "Low maneuverability, destructive firepower",
+      "VirtualCurrencyPrices": {
+        "CR": 100000
+      },
+      "RealCurrencyPrices": null,
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "laser_id",
+      "ItemClass": "weapon",
+      "CatalogVersion": "main",
+      "DisplayName": "Laser",
+      "Description": "Low damage weapon",
+      "VirtualCurrencyPrices": {
+        "CR": 2000
+      },
+      "RealCurrencyPrices": null,
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": " plasmogan_id",
+      "ItemClass": "weapon",
+      "CatalogVersion": "main",
+      "DisplayName": "Plasmogan",
+      "Description": "Middle damage weapon",
+      "VirtualCurrencyPrices": {
+        "CR": 5000
+      },
+      "RealCurrencyPrices": null,
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "proton torpedoes_id",
+      "ItemClass": "weapon",
+      "CatalogVersion": "main",
+      "DisplayName": "Proton torpedoes",
+      "Description": "Hight damage weapon",
+      "VirtualCurrencyPrices": {
+        "CR": 10000
+      },
+      "RealCurrencyPrices": null,
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    }
+  ],
+  "DropTables": []
+}
