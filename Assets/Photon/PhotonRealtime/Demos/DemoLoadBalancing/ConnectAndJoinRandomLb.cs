@@ -13,19 +13,25 @@ namespace Photon.Realtime.Demo
 {
     public class ConnectAndJoinRandomLb : MonoBehaviour, IConnectionCallbacks, IMatchmakingCallbacks, ILobbyCallbacks
     {
+        private const string MAP_FIGHT_KEY = "map";
+        private const string AI_FIGHT_EKY = "ai";
+        private const string NEW_AI_FIGHT_KEY = "new_ai";
+        private const string CLASS = "C0";
+        private const string LEVEL = "C1";
+
         [SerializeField]
         private AppSettings appSettings = new AppSettings();
-        private LoadBalancingClient lbc;
+        private LoadBalancingClient _lbc;
 
         private ConnectionHandler ch;
         public Text StateUiText;
 
         public void Start()
         {
-            this.lbc = new LoadBalancingClient();
-            this.lbc.AddCallbackTarget(this);
+            this._lbc = new LoadBalancingClient();
+            this._lbc.AddCallbackTarget(this);
 
-            if (!this.lbc.ConnectUsingSettings(appSettings))
+            if (!this._lbc.ConnectUsingSettings(appSettings))
             {
                 Debug.LogError("Error while connecting");
             }
@@ -33,25 +39,21 @@ namespace Photon.Realtime.Demo
             this.ch = this.gameObject.GetComponent<ConnectionHandler>();
             if (this.ch != null)
             {
-                this.ch.Client = this.lbc;
+                this.ch.Client = this._lbc;
                 this.ch.StartFallbackSendAckThread();
             }
         }
 
         public void Update()
         {
-            LoadBalancingClient client = this.lbc;
-            if (client != null)
+            if (_lbc != null)
             {
-                client.Service();
-
+                _lbc.Service();
 
                 Text uiText = this.StateUiText;
-                string state = client.State.ToString();
+                string state = _lbc.State.ToString();
                 if (uiText != null && !uiText.text.Equals(state))
-                {
-                    uiText.text = "State: " + state;
-                }
+                    uiText.text = $"User id: {_lbc.UserId}";
             }
         }
 
@@ -63,7 +65,22 @@ namespace Photon.Realtime.Demo
         public void OnConnectedToMaster()
         {
             Debug.Log("OnConnectedToMaster");
-            this.lbc.OpJoinRandomRoom();    // joins any open room (no filter)
+            var lobby = new TypedLobby("lobby", LobbyType.SqlLobby);
+            _lbc.OpJoinLobby(lobby);
+            //var options = new RoomOptions()
+            //{
+            //    MaxPlayers = 12,
+            //    CustomRoomPropertiesForLobby = new[] { AI_FIGHT_EKY, NEW_AI_FIGHT_KEY },
+            //    CustomRoomProperties = new Hashtable { { AI_FIGHT_EKY, 1 }, { NEW_AI_FIGHT_KEY, 2 } }
+            //};
+            //var enterRoomParams = new EnterRoomParams
+            //{
+            //    RoomOptions = options,
+            //    ExpectedUsers = new string[] {"23434344"}
+            //};
+            //_lbc.OpCreateRoom(enterRoomParams);
+
+            //_lbc.OpFindFriends(new[] { "34343434" });
         }
 
         public void OnDisconnected(DisconnectCause cause)
@@ -95,6 +112,22 @@ namespace Photon.Realtime.Demo
 
         public void OnJoinedLobby()
         {
+            //Host
+            var optionRoom = new RoomOptions();
+            optionRoom.CustomRoomProperties = new Hashtable() { { LEVEL, 10 } };
+            optionRoom.CustomRoomPropertiesForLobby = new[] { LEVEL };
+            var enterRoomParams = new EnterRoomParams();
+            enterRoomParams.RoomOptions = optionRoom;
+
+            _lbc.OpCreateRoom(enterRoomParams);
+
+            //Client
+            var sqlLobbyFilter = $"{LEVEL} BETWEEN {10} AND 100";
+            var options = new OpJoinRandomRoomParams
+            {
+                SqlLobbyFilter = sqlLobbyFilter
+            };
+            _lbc.OpJoinRandomRoom(options);
         }
 
         public void OnLeftLobby()
@@ -116,6 +149,12 @@ namespace Photon.Realtime.Demo
         public void OnJoinedRoom()
         {
             Debug.Log("OnJoinedRoom");
+            Debug.Log(_lbc.CurrentRoom.PlayerCount);
+
+            foreach (var player in _lbc.CurrentRoom.Players.Values)
+            {
+                Debug.Log(player.UserId);
+            }
         }
 
         public void OnJoinRoomFailed(short returnCode, string message)
@@ -125,7 +164,7 @@ namespace Photon.Realtime.Demo
         public void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.Log("OnJoinRandomFailed");
-            this.lbc.OpCreateRoom(new EnterRoomParams());
+            this._lbc.OpCreateRoom(new EnterRoomParams());
         }
 
         public void OnLeftRoom()
@@ -139,7 +178,7 @@ namespace Photon.Realtime.Demo
         {
             Debug.Log("OnRegionPingCompleted " + regionHandler.BestRegion);
             Debug.Log("RegionPingSummary: " + regionHandler.SummaryToCache);
-            this.lbc.ConnectToRegionMaster(regionHandler.BestRegion.Code);
+            this._lbc.ConnectToRegionMaster(regionHandler.BestRegion.Code);
         }
     }
 }
