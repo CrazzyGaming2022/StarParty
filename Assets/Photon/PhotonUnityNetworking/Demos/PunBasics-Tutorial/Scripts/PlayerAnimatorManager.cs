@@ -14,68 +14,35 @@ namespace Photon.Pun.Demo.PunBasics
 {
 	public class PlayerAnimatorManager : MonoBehaviourPun 
 	{
-        #region Private Fields
+        [SerializeField] private float _directionDampTime = 0.25f;
+        
+		private Animator _animator;
 
-        [SerializeField]
-	    private float directionDampTime = 0.25f;
-        Animator animator;
-
-		#endregion
-
-		#region MonoBehaviour CallBacks
-
-		/// <summary>
-		/// MonoBehaviour method called on GameObject by Unity during initialization phase.
-		/// </summary>
-	    void Start () 
+	    private void Start () 
 	    {
-	        animator = GetComponent<Animator>();
+	        _animator = GetComponent<Animator>();
 	    }
 	        
-		/// <summary>
-		/// MonoBehaviour method called on GameObject by Unity on every frame.
-		/// </summary>
-	    void Update () 
+	    private void Update () 
 	    {
-
-			// Prevent control is connected to Photon and represent the localPlayer
 	        if( photonView.IsMine == false && PhotonNetwork.IsConnected == true )
-	        {
 	            return;
-	        }
 
-			// failSafe is missing Animator component on GameObject
-	        if (!animator)
-	        {
-				return;
-			}
+            AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);			
 
-			// deal with Jumping
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);			
-
-			// only allow jumping if we are running.
             if (stateInfo.IsName("Base Layer.Run"))
-            {
-				// When using trigger parameter
-                if (Input.GetButtonDown("Fire2")) animator.SetTrigger("Jump"); 
-			}
+                if (Input.GetButtonDown("Fire2")) 
+					_animator.SetTrigger("Jump"); 
            
-			// deal with movement
-            float h = Input.GetAxis("Horizontal");
-            float v = Input.GetAxis("Vertical");
+            float horizontal = Input.GetAxis("Horizontal");
+            float vertical = Input.GetAxis("Vertical");
 
-			// prevent negative Speed.
-            if( v < 0 )
-            {
-                v = 0;
-            }
+            if( vertical < 0 )
+                vertical = 0;
 
-			// set the Animator Parameters
-            animator.SetFloat( "Speed", h*h+v*v );
-            animator.SetFloat( "Direction", h, directionDampTime, Time.deltaTime );
+			_animator.SetFloat("Speed", horizontal * horizontal + vertical * vertical);
+            _animator.SetFloat( "Direction", horizontal, _directionDampTime, Time.deltaTime );
 	    }
-
-		#endregion
 
 	}
 }
