@@ -17,177 +17,156 @@ namespace Photon.Pun
     [HelpURL("https://doc.photonengine.com/en-us/pun/v2/gameplay/synchronization-and-state")]
     public class PhotonTransformView : MonoBehaviourPun, IPunObservable
     {
-        private float m_Distance;
-        private float m_Angle;
+        private float _distance;
+        private float _angle;
 
-        private Vector3 m_Direction;
-        private Vector3 m_NetworkPosition;
-        private Vector3 m_StoredPosition;
+        private Vector3 _direction;
+        private Vector3 _networkPosition;
+        private Vector3 _storedPosition;
 
-        private Quaternion m_NetworkRotation;
+        private Quaternion _networkRotation;
 
-        public bool m_SynchronizePosition = true;
-        public bool m_SynchronizeRotation = true;
-        public bool m_SynchronizeScale = false;
+        public bool _synchronizePosition = true;
+        public bool _synchronizeRotation = true;
+        public bool _synchronizeScale = false;
 
         [Tooltip("Indicates if localPosition and localRotation should be used. Scale ignores this setting, and always uses localScale to avoid issues with lossyScale.")]
-        public bool m_UseLocal;
+        public bool _useLocal;
 
-        bool m_firstTake = false;
+        bool _firstTake = false;
 
         public void Awake()
         {
-            m_StoredPosition = transform.localPosition;
-            m_NetworkPosition = Vector3.zero;
+            _storedPosition = transform.localPosition;
+            _networkPosition = Vector3.zero;
 
-            m_NetworkRotation = Quaternion.identity;
+            _networkRotation = Quaternion.identity;
         }
 
         private void Reset()
         {
-            // Only default to true with new instances. useLocal will remain false for old projects that are updating PUN.
-            m_UseLocal = true;
+            _useLocal = true;
         }
 
         void OnEnable()
         {
-            m_firstTake = true;
+            _firstTake = true;
         }
 
         public void Update()
         {
-            var tr = transform;
-
-            if (!this.photonView.IsMine)
+            if (!photonView.IsMine)
             {
-                if (m_UseLocal)
+                if (_useLocal)
 
                 {
-                    tr.localPosition = Vector3.MoveTowards(tr.localPosition, this.m_NetworkPosition, this.m_Distance  * Time.deltaTime * PhotonNetwork.SerializationRate);
-                    tr.localRotation = Quaternion.RotateTowards(tr.localRotation, this.m_NetworkRotation, this.m_Angle * Time.deltaTime * PhotonNetwork.SerializationRate);
+                    transform.localPosition = Vector3.MoveTowards(transform.localPosition, _networkPosition, _distance  * Time.deltaTime * PhotonNetwork.SerializationRate);
+                    transform.localRotation = Quaternion.RotateTowards(transform.localRotation, _networkRotation, _angle * Time.deltaTime * PhotonNetwork.SerializationRate);
                 }
                 else
                 {
-                    tr.position = Vector3.MoveTowards(tr.position, this.m_NetworkPosition, this.m_Distance * Time.deltaTime * PhotonNetwork.SerializationRate);
-                    tr.rotation = Quaternion.RotateTowards(tr.rotation, this.m_NetworkRotation, this.m_Angle * Time.deltaTime *  PhotonNetwork.SerializationRate);
+                    transform.position = Vector3.MoveTowards(transform.position, _networkPosition, _distance * Time.deltaTime * PhotonNetwork.SerializationRate);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, _networkRotation, _angle * Time.deltaTime *  PhotonNetwork.SerializationRate);
                 }
             }
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            var tr = transform;
-
-            // Write
             if (stream.IsWriting)
             {
-                if (this.m_SynchronizePosition)
+                if (_synchronizePosition)
+                    SendPosition(stream);
+
+                if (_synchronizeRotation)
                 {
-                    if (m_UseLocal)
-                    {
-                        this.m_Direction = tr.localPosition - this.m_StoredPosition;
-                        this.m_StoredPosition = tr.localPosition;
-                        stream.SendNext(tr.localPosition);
-                        stream.SendNext(this.m_Direction);
-                    }
+                    if (_useLocal)
+                        stream.SendNext(transform.localRotation);
                     else
-                    {
-                        this.m_Direction = tr.position - this.m_StoredPosition;
-                        this.m_StoredPosition = tr.position;
-                        stream.SendNext(tr.position);
-                        stream.SendNext(this.m_Direction);
-                    }
+                        stream.SendNext(transform.rotation);
                 }
 
-                if (this.m_SynchronizeRotation)
-                {
-                    if (m_UseLocal)
-                    {
-                        stream.SendNext(tr.localRotation);
-                    }
-                    else
-                    {
-                        stream.SendNext(tr.rotation);
-                    }
-                }
-
-                if (this.m_SynchronizeScale)
-                {
-                    stream.SendNext(tr.localScale);
-                }
+                if (_synchronizeScale)
+                    stream.SendNext(transform.localScale);
             }
-            // Read
             else
             {
-                if (this.m_SynchronizePosition)
-                {
-                    this.m_NetworkPosition = (Vector3)stream.ReceiveNext();
-                    this.m_Direction = (Vector3)stream.ReceiveNext();
+                if (_synchronizePosition)
+                    ReceivePosition(stream, info);
 
-                    if (m_firstTake)
-                    {
-                        if (m_UseLocal)
-                            tr.localPosition = this.m_NetworkPosition;
-                        else
-                            tr.position = this.m_NetworkPosition;
+                if (_synchronizeRotation)
+                    ReceiveRotation(stream);
 
-                        this.m_Distance = 0f;
-                    }
-                    else
-                    {
-                        float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
-                        this.m_NetworkPosition += this.m_Direction * lag;
-                        if (m_UseLocal)
-                        {
-                            this.m_Distance = Vector3.Distance(tr.localPosition, this.m_NetworkPosition);
-                        }
-                        else
-                        {
-                            this.m_Distance = Vector3.Distance(tr.position, this.m_NetworkPosition);
-                        }
-                    }
+                if (_synchronizeScale)
+                    transform.localScale = (Vector3)stream.ReceiveNext();
 
-                }
+                if (_firstTake)
+                    _firstTake = false;
+            }
+        }
 
-                if (this.m_SynchronizeRotation)
-                {
-                    this.m_NetworkRotation = (Quaternion)stream.ReceiveNext();
+        private void ReceiveRotation(PhotonStream stream)
+        {
+            _networkRotation = (Quaternion)stream.ReceiveNext();
 
-                    if (m_firstTake)
-                    {
-                        this.m_Angle = 0f;
+            if (_firstTake)
+            {
+                _angle = 0f;
 
-                        if (m_UseLocal)
-                        {
-                            tr.localRotation = this.m_NetworkRotation;
-                        }
-                        else
-                        {
-                            tr.rotation = this.m_NetworkRotation;
-                        }
-                    }
-                    else
-                    {
-                        if (m_UseLocal)
-                        {
-                            this.m_Angle = Quaternion.Angle(tr.localRotation, this.m_NetworkRotation);
-                        }
-                        else
-                        {
-                            this.m_Angle = Quaternion.Angle(tr.rotation, this.m_NetworkRotation);
-                        }
-                    }
-                }
+                if (_useLocal)
+                    transform.localRotation = _networkRotation;
+                else
+                    transform.rotation = _networkRotation;
+            }
+            else
+            {
+                if (_useLocal)
+                    _angle = Quaternion.Angle(transform.localRotation, _networkRotation);
+                else
+                    _angle = Quaternion.Angle(transform.rotation, _networkRotation);
+            }
+        }
 
-                if (this.m_SynchronizeScale)
-                {
-                    tr.localScale = (Vector3)stream.ReceiveNext();
-                }
+        private void ReceivePosition(PhotonStream stream, PhotonMessageInfo info)
+        {
+            _networkPosition = (Vector3)stream.ReceiveNext();
+            _direction = (Vector3)stream.ReceiveNext();
 
-                if (m_firstTake)
-                {
-                    m_firstTake = false;
-                }
+            if (_firstTake)
+            {
+                if (_useLocal)
+                    transform.localPosition = _networkPosition;
+                else
+                    transform.position = _networkPosition;
+
+                _distance = 0f;
+            }
+            else
+            {
+                float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+                _networkPosition += _direction * lag;
+                if (_useLocal)
+                    _distance = Vector3.Distance(transform.localPosition, _networkPosition);
+                else
+                    _distance = Vector3.Distance(transform.position, _networkPosition);
+            }
+        }
+
+        private void SendPosition(PhotonStream stream)
+        {
+            if (_useLocal)
+            {
+                _direction = transform.localPosition - _storedPosition;
+                _storedPosition = transform.localPosition;
+                stream.SendNext(transform.localPosition);
+                stream.SendNext(_direction);
+            }
+            else
+            {
+                _direction = transform.position - _storedPosition;
+                _storedPosition = transform.position;
+                stream.SendNext(transform.position);
+                stream.SendNext(_direction);
             }
         }
     }

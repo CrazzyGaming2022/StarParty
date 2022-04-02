@@ -21,7 +21,7 @@ public class PlayFabLogin : MonoBehaviour
         _loginButton.onClick.RemoveAllListeners();
     }
 
-    private void Login()
+    public void Login()
     {
         _loginButton.interactable = false;
 

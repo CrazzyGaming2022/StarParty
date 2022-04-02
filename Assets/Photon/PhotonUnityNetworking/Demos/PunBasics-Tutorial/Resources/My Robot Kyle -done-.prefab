@@ -388,12 +388,12 @@ GameObject:
   - component: {fileID: 9500000}
   - component: {fileID: 14300000}
   - component: {fileID: 11454274}
-  - component: {fileID: 11449706}
   - component: {fileID: 11400008}
   - component: {fileID: 11400010}
   - component: {fileID: 5484970}
   - component: {fileID: 11484610}
   - component: {fileID: 11413802}
+  - component: {fileID: 7704289618977589540}
   m_Layer: 0
   m_Name: My Robot Kyle -done-
   m_TagString: Player
@@ -466,22 +466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 507e5741cec8a42dc964c8e0a4b55bd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  directionDampTime: 0.25
---- !u!114 &11449706
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98fac77b304554f238a61572f5720187, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Health: 1
-  playerUiPrefab: {fileID: 170056, guid: e41946a981c3b444a84d15eb7c608ca4, type: 3}
-  beams: {fileID: 170262}
+  _directionDampTime: 0.25
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,9 +486,9 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 11449706}
   - {fileID: 11400010}
   - {fileID: 11413802}
+  - {fileID: 7704289618977589540}
   sceneViewId: 0
   InstantiationId: 1
   isRuntimeInstantiated: 0
@@ -519,10 +504,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 0
+  _synchronizePosition: 1
+  _synchronizeRotation: 1
+  _synchronizeScale: 0
+  _useLocal: 0
 --- !u!54 &5484970
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -588,6 +573,21 @@ MonoBehaviour:
     LayerIndex: 0
   - SynchronizeType: 0
     LayerIndex: 1
+--- !u!114 &7704289618977589540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62c4352ade81b6a4e9a14c79182a4c43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: 1
+  _playerUiPrefab: {fileID: 170056, guid: e41946a981c3b444a84d15eb7c608ca4, type: 3}
+  beams: {fileID: 170262}
 --- !u!1 &100032
 GameObject:
   m_ObjectHideFlags: 0
