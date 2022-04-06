@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/HomeWork4 Menu.unity
     guid: a0dc3e189e9588c40b9a1bb43279a42c
   - enabled: 0
@@ -30,10 +30,13 @@ EditorBuildSettings:
     path: Assets/Photon/PhotonUnityNetworking/Demos/PunBasics-Tutorial/Scenes/PunBasics-Room
       for 4.unity
     guid: e7a7f9734636d415ca84ef3aaf7680f6
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HomeWork7 Launcher.unity
     guid: 3e7ac1beac8f76a4db894680d4f8c3da
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HomeWork7.unity
     guid: 59ed2e25874419843b25795ad680657f
+  - enabled: 1
+    path: Assets/Scenes/HomeWork8.unity
+    guid: 013d6373b39a22f4a989b8b0d118f77e
   m_configObjects: {}
